@@ -14,6 +14,7 @@ class Class(BaseModel):
     no_of_times = models.IntegerField()
     subject = models.ForeignKey(Subject, on_delete=models.PROTECT, null=True)
     tutor = models.ForeignKey(Tutor, on_delete=models.PROTECT)
+    students = models.ManyToManyField(Student)
     education_level = models.ForeignKey(EducationLevel)
 
 class Booking(BaseModel):

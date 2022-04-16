@@ -22,6 +22,7 @@ class SubjectTag(models.Model):
 class Subject(models.Model):
     """ A model to store information about a subject"""
     name = models.CharField(max_length=30)
+    description = models.TextField(null=True, blank=True)
     subject_tags = models.ManyToManyField(SubjectTag)
     subject_category = models.ForeignKey(SubjectCategory, on_delete=models.SET_NULL, null=True)
     education_level = models.ForeignKey(EducationLevel, on_delete=models.SET_NULL, null=True)
