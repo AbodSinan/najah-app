@@ -1,3 +1,8 @@
+from django.urls import include
+
+from authentication.urls import url_patterns as auth_urls
+from education.urls import api_router as education_router
+
 """najah URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -18,4 +23,7 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('education/', include((education_router.urls, "education"))),
+    path('auth/', include((auth_urls, "auth"))),
+    path('api-auth/' , include('rest_framework.urls')),
 ]

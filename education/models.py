@@ -9,7 +9,7 @@ class BaseModel(models.Model):
 class EducationLevel(models.Model):
     """ To store the information for the educational level (e.g. school, bachelor, diploma, etc.)"""
     name = models.CharField(max_length=30)
-    is_higher_education = models.BooleanField()
+    is_higher_education = models.BooleanField(default=False)
 
 class SubjectCategory(models.Model):
     """ A model to store category of subjects (e.g. medical, history, engineering)"""
