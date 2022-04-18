@@ -1,6 +1,7 @@
 from django.urls import include
 
 from authentication.urls import url_patterns as auth_urls
+from booking.urls import url_patterns as booking_urls
 from education.urls import api_router as education_router
 
 """najah URL Configuration
@@ -24,6 +25,7 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('education/', include((education_router.urls, "education"))),
+    path('booking/', include((booking_urls, "booking"))),
     path('auth/', include((auth_urls, "auth"))),
     path('api-auth/' , include('rest_framework.urls')),
 ]
