@@ -18,8 +18,8 @@ class Class(BaseModel):
     frequency = models.CharField(max_length=1, choices=FrequencyChoices.choices, null=False)
     no_of_times = models.IntegerField(null=False)
     subject = models.ForeignKey(Subject, on_delete=models.PROTECT, null=True)
-    tutor = models.ForeignKey(Profile, on_delete=models.PROTECT, related_name="%(class)s_tutored")
-    students = models.ManyToManyField(Profile, null=True, related_name="%(class)s_joined")
+    tutor = models.ForeignKey(Profile, on_delete=models.PROTECT, related_name="classes_tutored")
+    students = models.ManyToManyField(Profile, null=True, related_name="classes_joined")
     education_level = models.ForeignKey(EducationLevel, on_delete=models.SET_NULL, null=True)
     rate_per_hour = models.DecimalField(decimal_places=2, max_digits=15, default=Decimal("0.00"))
 
