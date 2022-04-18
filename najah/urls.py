@@ -3,6 +3,7 @@ from django.urls import include
 from authentication.urls import url_patterns as auth_urls
 from booking.urls import url_patterns as booking_urls
 from education.urls import api_router as education_router
+from profile.urls import url_patterns as profile_urls
 
 """najah URL Configuration
 
@@ -26,6 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('education/', include((education_router.urls, "education"))),
     path('booking/', include((booking_urls, "booking"))),
+    path("profile/", include((profile_urls, "profile"))),
     path('auth/', include((auth_urls, "auth"))),
     path('api-auth/' , include('rest_framework.urls')),
 ]
