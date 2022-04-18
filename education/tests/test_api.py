@@ -4,7 +4,7 @@ from education.models import SubjectCategory
 from rest_framework.test import APITestCase
 
 from education.tests.factories import SubjectCategoryFactory, SubjectTagFactory, SubjectFactory, EducationLevelFactory
-from persons.tests.factories import UserFactory, TokenFactory
+from profile.tests.factories import UserFactory, TokenFactory
 
 class TestSubjectViewSet(APITestCase):
     SUBJECT_LIST_URL = reverse("education:subjects-list")
