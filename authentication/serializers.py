@@ -1,14 +1,15 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.models import User
 
-from authentication.models import CustomUser, UserType
+from profile.models import UserType, Profile
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
             required=True,
-            validators=[UniqueValidator(queryset=CustomUser.objects.all())]
+            validators=[UniqueValidator(queryset=User.objects.all())]
             )
 
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
@@ -17,7 +18,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     user_type = serializers.ChoiceField(required=True, choices=UserType.choices)
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name', 'user_type')
         extra_kwargs = {
             'first_name': {'required': True},
@@ -31,10 +32,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = CustomUser.objects.create(
+        user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
-            user_type=validated_data['user_type'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name']
         )
@@ -42,5 +42,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         
         user.set_password(validated_data['password'])
         user.save()
+
+        Profile.objects.create(
+            name=validated_data["first_name"] + validated_data["last_name"],
+            user_type=validated_data["user_type"]
+        )
 
         return user

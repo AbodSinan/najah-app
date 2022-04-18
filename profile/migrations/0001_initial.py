@@ -3,7 +3,7 @@
 from django.db import migrations, models
 import django.db.models.deletion
 import enumfields.fields
-import persons.enums
+import profile.enums
 
 
 class Migration(migrations.Migration):
@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('modified', models.DateTimeField(auto_now=True)),
                 ('name', models.CharField(max_length=30)),
                 ('age', models.IntegerField()),
-                ('gender', enumfields.fields.EnumField(enum=persons.enums.Gender, max_length=10)),
+                ('gender', enumfields.fields.EnumField(enum=profile.enums.Gender, max_length=10)),
                 ('school', models.CharField(max_length=50)),
                 ('education_level', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='education.educationlevel')),
             ],

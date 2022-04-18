@@ -4,24 +4,18 @@ from django.contrib.auth.models import User
 from enumfields import EnumField
 
 from education.models import EducationLevel, BaseModel
-from persons.enums import Gender
+from profile.enums import Gender
 
-#TODO: Add user to person model and establish logic
+class UserType(models.TextChoices):
+    STUDENT = ("S", "Student")
+    TUTOR = ("T", "Tutor")
 
-class Person(BaseModel):
+class Profile(BaseModel):
     """ An abstract model representing a person entity"""
     name = models.CharField(max_length=30, null=True)
+    user_type = models.CharField(max_length=1, choices=UserType.choices, default=UserType.STUDENT)
     age = models.IntegerField(null=True)
     gender = EnumField(Gender, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     education_level = models.ForeignKey(EducationLevel, on_delete=models.SET_NULL, null=True)
-
-    class Meta:
-        abstract = True
-
-class Student(Person):
-    school = models.CharField(max_length=50)
-
-class Tutor(Person):
     description = models.TextField(null=True)
-    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2)

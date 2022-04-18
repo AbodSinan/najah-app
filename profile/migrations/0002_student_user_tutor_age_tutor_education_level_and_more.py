@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import enumfields.fields
-import persons.enums
+import profile.enums
 
 
 class Migration(migrations.Migration):
@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('education', '0002_subject_description'),
-        ('persons', '0001_initial'),
+        ('profile', '0001_initial'),
     ]
 
     operations = [
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tutor',
             name='gender',
-            field=enumfields.fields.EnumField(enum=persons.enums.Gender, max_length=10, null=True),
+            field=enumfields.fields.EnumField(enum=profile.enums.Gender, max_length=10, null=True),
         ),
         migrations.AddField(
             model_name='tutor',
@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='student',
             name='gender',
-            field=enumfields.fields.EnumField(enum=persons.enums.Gender, max_length=10, null=True),
+            field=enumfields.fields.EnumField(enum=profile.enums.Gender, max_length=10, null=True),
         ),
         migrations.AlterField(
             model_name='student',
