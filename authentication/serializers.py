@@ -15,7 +15,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
 
-    user_type = serializers.ChoiceField(required=True, choices=UserType.choices)
+    user_type = serializers.ChoiceField(write_only=True, required=True, choices=UserType.choices)
 
     class Meta:
         model = User
@@ -44,7 +44,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
 
         Profile.objects.create(
-            name=validated_data["first_name"] + validated_data["last_name"],
+            user = user,
             user_type=validated_data["user_type"]
         )
 

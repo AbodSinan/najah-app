@@ -11,8 +11,7 @@ class UserType(models.TextChoices):
     TUTOR = ("T", "Tutor")
 
 class Profile(BaseModel):
-    """ An abstract model representing a person entity"""
-    name = models.CharField(max_length=30, null=True)
+    """ An extension to the user model, containing more info """
     user_type = models.CharField(max_length=1, choices=UserType.choices, default=UserType.STUDENT)
     age = models.IntegerField(null=True)
     gender = EnumField(Gender, null=True)
