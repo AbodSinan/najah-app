@@ -77,6 +77,17 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-cors-headers"
+version = "3.11.0"
+description = "django-cors-headers is a Django application for handling the server headers required for Cross-Origin Resource Sharing (CORS)."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+Django = ">=2.2"
+
+[[package]]
 name = "django-enumchoicefield"
 version = "3.0.0"
 description = "A choice field for Django using native Python Enums"
@@ -310,7 +321,7 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "911e6d50024be18dec3006b97aa746187bc34d4d639e9ac91ca6b808d88ea566"
+content-hash = "740d44de891a6af2241be994c3d91b440a83519ed69a8040b337e4bf21c868a2"
 
 [metadata.files]
 asgiref = [
@@ -354,6 +365,10 @@ dj-database-url = [
 django = [
     {file = "Django-4.0.4-py3-none-any.whl", hash = "sha256:07c8638e7a7f548dc0acaaa7825d84b7bd42b10e8d22268b3d572946f1e9b687"},
     {file = "Django-4.0.4.tar.gz", hash = "sha256:4e8177858524417563cc0430f29ea249946d831eacb0068a1455686587df40b5"},
+]
+django-cors-headers = [
+    {file = "django-cors-headers-3.11.0.tar.gz", hash = "sha256:eb98389bf7a2afc5d374806af4a9149697e3a6955b5a2dc2bf049f7d33647456"},
+    {file = "django_cors_headers-3.11.0-py3-none-any.whl", hash = "sha256:a22be2befd4069c4fc174f11cf067351df5c061a3a5f94a01650b4e928b0372b"},
 ]
 django-enumchoicefield = [
     {file = "django-enumchoicefield-3.0.0.tar.gz", hash = "sha256:e8e7ce6cfb978883b1052114000aa6b9c62d6497167a6ef42fc9c89dde0c6637"},
