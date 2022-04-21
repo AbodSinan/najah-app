@@ -31,4 +31,4 @@ class TestSubjectViewSet(APITestCase):
 
     def test_subject_list(self):
         response = self.client.get(self.SUBJECT_LIST_URL)
-        print(response.json())
+        self.assertEqual(len(response.json()), 2)

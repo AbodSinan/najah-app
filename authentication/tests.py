@@ -71,11 +71,11 @@ class TestRegister(APITestCase):
         self.assertEqual(User.objects.count(), 1)
 
         login_req = {
-            "email": "JohnDoe69",
+            "email": "Test@email.com",
             "password": "passwer1234",
         }
 
-        resp = self.client.login(username=login_req["email"], password=login_req["password"])
+        resp = self.client.login(email=login_req["email"], password=login_req["password"])
         self.assertTrue(resp)
 
     def test_register_then_login_failed(self):
@@ -118,7 +118,7 @@ class TestRegister(APITestCase):
         self.assertEqual(User.objects.count(), 1)
 
         login_req = {
-            "username": "JohnDoe69",
+            "email": "Test@email.com",
             "password": "passwer1234",
         }
 

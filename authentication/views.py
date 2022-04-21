@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from authentication.serializers import RegisterSerializer
+from authentication.serializers import LoginSerializer, RegisterSerializer
 from profile.serializers import ProfileSerializer
 
 from rest_framework import generics
@@ -15,7 +15,8 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
 class CustomAuthToken(ObtainAuthToken):
-
+    serializer_class = LoginSerializer
+    
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
