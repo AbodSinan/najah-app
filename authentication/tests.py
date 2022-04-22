@@ -3,8 +3,6 @@ from django.urls import reverse
 
 from rest_framework.test import APITestCase
 
-from profile.models import Profile
-
 class TestRegister(APITestCase):
     REGISTER_URL = reverse("auth:register")
     LOGIN_URL = reverse("auth:login")
@@ -123,6 +121,7 @@ class TestRegister(APITestCase):
         }
 
         resp = self.client.post(self.LOGIN_URL, data=login_req)
+        print(resp.json())
         self.assertEqual(resp.status_code, 200)
         self.assertTrue("token" in resp.json())
         
