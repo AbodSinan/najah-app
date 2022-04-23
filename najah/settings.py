@@ -65,6 +65,8 @@ AUTHENTICATION_BACKENDS = ['authentication.authentication.EmailBackend']
 
 CORS_ORIGIN_ALLOW_ALL=True
 
+CSRF_TRUSTED_ORIGINS = ["https://i-najah.herokuapp.com"]
+
 ROOT_URLCONF = 'najah.urls'
 
 TEMPLATES = [
