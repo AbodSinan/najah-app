@@ -91,3 +91,30 @@ class TestBookingViewSet(APITestCase):
         resp = self.client.post(url, data=req, HTTP_AUTHORIZATION=f"Token {student_token.key}")
         
         self.assertEqual(resp.status_code, 400)
+
+    def test_list_user_classes(self):
+        # Create a bunch of new classes, tutors and students
+        tutor_profile2 = ProfileFactory(user_type=UserType.TUTOR, education_level=self.education_level)
+        subject_class3 = ClassFactory(subject=self.subject, tutor=tutor_profile2, duration=Decimal("1.50"), frequency="W", no_of_times=2, rate_per_hour= Decimal("10.00"))
+        self.subject_class.students.add(self.student_profile1)
+        self.subject_class2.students.add(self.student_profile2)
+        subject_class3.students.add(self.student_profile1)
+        subject_class3.students.add(self.student_profile2)
+
+        tutor2_token = TokenFactory(user = tutor_profile2.user)
+        student1_token = TokenFactory(user = self.student_profile1.user)
+
+        url = reverse("booking:user_classes")
+
+        # Test retrieving classes for a student
+        resp1 = self.client.get(url, HTTP_AUTHORIZATION=f"Token {tutor2_token}")
+        self.assertEqual(resp1.status_code, 200)
+        self.assertEqual(len(resp1.json()), 1)
+        self.assertEqual(resp1.json()[0]["id"], subject_class3.id)
+
+        resp2 = self.client.get(url, HTTP_AUTHORIZATION=f"Token {student1_token}")
+        self.assertEqual(resp2.status_code, 200)
+        self.assertEqual(len(resp2.json()), 2)
+        
+        cls_ids = [x["id"] for x in resp2.json()]
+        self.assertCountEqual(cls_ids, [self.subject_class.id, subject_class3.id])

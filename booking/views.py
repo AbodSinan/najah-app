@@ -47,3 +47,13 @@ class SubjectClassListView(generics.ListCreateAPIView):
             raise ValidationError("Students cannot create a class!")
         else:
             return super().perform_create(serializer)
+
+class UserClassListCreateView(generics.ListCreateAPIView):
+    serializer_class = ClassSerializer
+
+    def get_queryset(self):
+        if self.request.user.profile.user_type == UserType.TUTOR:
+            return Class.objects.filter(tutor__user=self.request.user)
+        else:
+            return Class.objects.filter(students__user=self.request.user)
+
