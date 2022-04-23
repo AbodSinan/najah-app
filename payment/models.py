@@ -19,3 +19,6 @@ class Payment(BaseModel):
     type = models.CharField(PaymentType, max_length=2, choices=PaymentType.choices, default=PaymentType.CASH)
     status = models.IntegerField(PaymentStatus, choices=PaymentStatus.choices, default=PaymentStatus.INITIATED)
     amount = models.DecimalField(max_digits=15, decimal_places=0, default=Decimal("0.00"))
+
+    def __str__(self) -> str:
+        return f"({self.booking}) <{self.status}>"

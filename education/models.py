@@ -11,13 +11,21 @@ class EducationLevel(models.Model):
     name = models.CharField(max_length=30)
     is_higher_education = models.BooleanField(default=False)
 
+    def __str__(self) -> str:
+        return self.name
+
 class SubjectCategory(models.Model):
     """ A model to store category of subjects (e.g. medical, history, engineering)"""
     name = models.CharField(max_length=30)
 
+    def __str__(self) -> str:
+        return self.name
+
 class SubjectTag(models.Model):
     """ A model to store tags of a subject (e.g. co-curricular, primary, final-year, project, practical, etc.)"""
     name = models.CharField(max_length=30)
+    def __str__(self) -> str:
+        return self.name
 
 class Subject(models.Model):
     """ A model to store information about a subject"""
@@ -26,3 +34,6 @@ class Subject(models.Model):
     subject_tags = models.ManyToManyField(SubjectTag)
     subject_category = models.ForeignKey(SubjectCategory, on_delete=models.SET_NULL, null=True)
     education_level = models.ForeignKey(EducationLevel, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self) -> str:
+        return f"({self.education_level}) {self.name}"

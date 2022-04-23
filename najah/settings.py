@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework.authtoken',
     'rest_framework',
+    'corsheaders',
     'enumfields',
     'authentication',
     'payment',
@@ -52,12 +53,19 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = ['authentication.authentication.EmailBackend']
+
+CORS_ORIGIN_ALLOW_ALL=True
+
+CSRF_TRUSTED_ORIGINS = ["https://i-najah.herokuapp.com"]
 
 ROOT_URLCONF = 'najah.urls'
 

@@ -31,8 +31,14 @@ class Class(BaseModel):
     def total_price(self):
         return Decimal(self.price_per_session * self.no_of_times)
 
+    def __str__(self) -> str:
+        return f"({self.id}){self.tutor}:{self.subject}"
+
 class Booking(BaseModel):
     student = models.ForeignKey(Profile, on_delete=models.PROTECT)
     booking_class = models.ForeignKey(Class, on_delete=models.PROTECT)
     payment = models.ForeignKey(Payment, on_delete=models.PROTECT)
+
+    def __str__(self) -> str:
+        return f"{self.student}: {self.booking_class}"
     
