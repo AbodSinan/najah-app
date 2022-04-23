@@ -19,9 +19,10 @@ class Class(BaseModel):
     no_of_times = models.IntegerField(null=False)
     subject = models.ForeignKey(Subject, on_delete=models.PROTECT, null=True)
     tutor = models.ForeignKey(Profile, on_delete=models.PROTECT, related_name="classes_tutored")
-    students = models.ManyToManyField(Profile, null=True, related_name="classes_joined")
+    students = models.ManyToManyField(Profile, related_name="classes_joined")
     education_level = models.ForeignKey(EducationLevel, on_delete=models.SET_NULL, null=True)
     rate_per_hour = models.DecimalField(decimal_places=2, max_digits=15, default=Decimal("0.00"))
+    description = models.TextField(null=True)
 
     @property
     def price_per_session(self):
