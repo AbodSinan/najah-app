@@ -1,8 +1,11 @@
-from ast import Sub
-from unicodedata import category
 from rest_framework import serializers
 
-from education.models import Subject, SubjectCategory, SubjectTag
+from education.models import Subject, SubjectCategory, SubjectTag, EducationLevel
+
+class EducationLevelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EducationLevel
+        fields = "__all__"
 
 class SubjectTagSerializer(serializers.ModelSerializer):
     class Meta:
