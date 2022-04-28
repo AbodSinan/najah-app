@@ -57,3 +57,6 @@ class UserClassListCreateView(generics.ListCreateAPIView):
         else:
             return Class.objects.filter(students__user=self.request.user)
 
+class ClassListView(generics.ListAPIView):
+    serializer_class = ClassSerializer
+    queryset = Class.objects.all()
