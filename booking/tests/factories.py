@@ -1,9 +1,11 @@
 import factory
 
 from booking.models import Class, Booking
+from profile.tests.factories import ProfileFactory
 from payment.tests.factories import PaymentFactory
 
 class ClassFactory(factory.django.DjangoModelFactory):
+    tutor = factory.SubFactory(ProfileFactory)
     class Meta:
         model = Class
 
