@@ -37,10 +37,17 @@ class Class(BaseModel):
     def __str__(self) -> str:
         return f"({self.id}){self.tutor}:{self.subject}"
 
+class BookingStatus(models.IntegerChoices):
+    PENDING = 10
+    CONFIRMED = 20
+    CANCELLED = -10
+
 class Booking(BaseModel):
     student = models.ForeignKey(Profile, on_delete=models.PROTECT)
     booking_class = models.ForeignKey(Class, on_delete=models.PROTECT)
-    payment = models.ForeignKey(Payment, on_delete=models.PROTECT)
+    payment = models.OneToOneField(Payment, on_delete=models.PROTECT)
+    status = models.IntegerField(BookingStatus, choices=BookingStatus.choices, default=BookingStatus.PENDING)
+
 
     def __str__(self) -> str:
         return f"{self.student}: {self.booking_class}"

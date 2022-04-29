@@ -27,8 +27,6 @@ class BookingSerializer(serializers.ModelSerializer):
             payment = payment,
             student = self.context["student"]
         )
-
-        booking_class.students.add(self.context["student"])
         
         return booking
 

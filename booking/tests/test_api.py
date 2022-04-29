@@ -5,9 +5,10 @@ from education.tests.factories import EducationLevelFactory, SubjectFactory
 
 from rest_framework.test import APITestCase
 
+from payment.models import Payment
 from profile.tests.factories import ProfileFactory, TokenFactory
 from profile.models import UserType
-from booking.models import Class
+from booking.models import Class, Booking
 from booking.tests.factories import ClassFactory, BookingFactory
 
 class TestBookingViewSet(APITestCase):
@@ -53,7 +54,8 @@ class TestBookingViewSet(APITestCase):
 
         last_class = Class.objects.get(id=self.subject_class.pk)
 
-        self.assertEqual(last_class.students.count(), 1)
+        self.assertEqual(Booking.objects.filter(booking_class=last_class).count(), 3)
+        self.assertEqual(Payment.objects.count(), 3)
 
     def test_list_classes_subject(self):
         url = reverse("booking:subject_classes", kwargs={"subject_id": self.subject.pk})
