@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 import django_on_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     'booking',
     'profile',
     'education',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -97,6 +99,11 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", None)
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_S3_ACCESS_KEY_ID", None)
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_S3_SECRET_ACCESS_KEY", None)
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES" : [
