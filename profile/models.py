@@ -1,20 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from enumfields import EnumField
-
 from education.models import EducationLevel, BaseModel
-from profile.enums import Gender
 
 class UserType(models.TextChoices):
     STUDENT = ("S", "Student")
     TUTOR = ("T", "Tutor")
 
+class Gender(models.TextChoices):
+    MALE = ("M", "Male")
+    FEMALE = ("F", "Female")
+
 class Profile(BaseModel):
     """ An extension to the user model, containing more info """
     user_type = models.CharField(max_length=1, choices=UserType.choices, default=UserType.STUDENT)
     age = models.IntegerField(null=True)
-    gender = EnumField(Gender, null=True)
+    gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     education_level = models.ForeignKey(EducationLevel, on_delete=models.SET_NULL, null=True)
     description = models.TextField(null=True)
