@@ -16,6 +16,9 @@ enums = "^0.0.2"
 django-on-heroku = "^1.1.2"
 django-cors-headers = "^3.11.0"
 django-storages = "^1.12.3"
+boto = "^2.49.0"
+boto3 = "^1.22.6"
+Pillow = "^9.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
