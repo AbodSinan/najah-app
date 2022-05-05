@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'authentication',
     'payment',
     'booking',
+    'private',
     'profile',
     'education',
     'storages',
