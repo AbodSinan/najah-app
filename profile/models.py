@@ -21,5 +21,9 @@ class Profile(BaseModel):
     description = models.TextField(null=True)
     image = models.ImageField(null=True)
 
+    @property
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+
     def __str__(self) -> str:
         return f"{self.user.email}:{self.user.first_name} ({self.user_type})"

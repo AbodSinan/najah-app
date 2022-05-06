@@ -4,6 +4,7 @@ from authentication.urls import url_patterns as auth_urls
 from booking.urls import url_patterns as booking_urls
 from education.urls import api_router as education_router
 from profile.urls import url_patterns as profile_urls
+from private.urls import url_patterns as private_urls
 
 """najah URL Configuration
 
@@ -30,4 +31,5 @@ urlpatterns = [
     path("profile/", include((profile_urls, "profile"))),
     path('auth/', include((auth_urls, "auth"))),
     path('api-auth/' , include('rest_framework.urls')),
+    path('private/', include((private_urls, "private")))
 ]
