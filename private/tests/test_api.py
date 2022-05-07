@@ -36,15 +36,17 @@ class PrivateClassesTestCases(APITestCase):
     }
 
     expected_resp = {
-      "student": self.student_profile1.id,
       "subject": self.subject.id,
       "education_level_name": self.education_level.name,
       "rate": "0.00",
     }
 
     resp = self.client.post(self.PRIVATE_CLASS_URL, data=req, HTTP_AUTHORIZATION=f"Token {self.student_token}")
+    
     self.assertEqual(resp.status_code, 201)
     self.assertEqual(PrivateClass.objects.count(), 1)
+
+    self.assertEqual(resp.json()["student"]["id"], self.student_profile1.id)
     
     for key in expected_resp.keys():
       self.assertEqual(expected_resp[key], resp.json()[key])
