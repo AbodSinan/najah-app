@@ -24,6 +24,7 @@ class PrivateClassSerializer(serializers.ModelSerializer):
 
 class StudentPrivateClassSerializer(serializers.ModelSerializer):
   tutor_offers = PrivateClassOfferSerializer(many=True, source="privateclassoffer_set")
+  student = ProfileSerializer(read_only=True)
   
   class Meta:
     model = PrivateClass
