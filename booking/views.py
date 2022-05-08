@@ -1,8 +1,8 @@
 from rest_framework import generics
 from rest_framework.exceptions import ValidationError
 
-from booking.models import Class, Booking
-from booking.serializers import BookingSerializer, ClassSerializer
+from booking.models import AcademyClass, Booking
+from booking.serializers import BookingSerializer, AcademyClassSerializer
 from profile.models import UserType
 
 
@@ -28,10 +28,10 @@ class ClassBookingListView(generics.ListCreateAPIView):
 
     
 class SubjectClassListView(generics.ListCreateAPIView):
-    serializer_class = ClassSerializer
+    serializer_class = AcademyClassSerializer
 
     def get_queryset(self):
-        return Class.objects.filter(
+        return AcademyClass.objects.filter(
             subject__id=self.kwargs["subject_id"],
         )
 
@@ -49,14 +49,14 @@ class SubjectClassListView(generics.ListCreateAPIView):
             return super().perform_create(serializer)
 
 class UserClassListCreateView(generics.ListCreateAPIView):
-    serializer_class = ClassSerializer
+    serializer_class = AcademyClassSerializer
 
     def get_queryset(self):
         if self.request.user.profile.user_type == UserType.TUTOR:
-            return Class.objects.filter(tutor__user=self.request.user)
+            return AcademyClass.objects.filter(tutor__user=self.request.user)
         else:
-            return Class.objects.filter(students__user=self.request.user)
+            return AcademyClass.objects.filter(students__user=self.request.user)
 
-class ClassListView(generics.ListAPIView):
-    serializer_class = ClassSerializer
-    queryset = Class.objects.all()
+class AcademyClassListView(generics.ListAPIView):
+    serializer_class = AcademyClassSerializer
+    queryset = AcademyClass.objects.all()

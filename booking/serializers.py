@@ -1,7 +1,6 @@
-from profile.models import UserType
 from rest_framework import serializers
 
-from booking.models import Booking, Class
+from booking.models import AcademyClass, Booking
 from education.models import Subject
 from payment.models import Payment, PaymentType
 from payment.serializers import PaymentSerializer
@@ -16,7 +15,7 @@ class BookingSerializer(serializers.ModelSerializer):
         read_only_fields = ("payment", "booking_class", "student")
 
     def create(self, validated_data):
-        booking_class = Class.objects.get(id=self.context["booking_class"])
+        booking_class = AcademyClass.objects.get(id=self.context["booking_class"])
         payment = Payment.objects.create(
             amount=booking_class.total_price,
             type=PaymentType.CASH
@@ -30,11 +29,11 @@ class BookingSerializer(serializers.ModelSerializer):
         
         return booking
 
-class ClassSerializer(serializers.ModelSerializer):
+class AcademyClassSerializer(serializers.ModelSerializer):
     tutor = ProfileSerializer(read_only=True)
     students = ProfileSerializer(many=True, required=False)
     class Meta:
-        model = Class
+        model = AcademyClass
         fields = "__all__"
         read_only_fields = ("tutor",)
 
@@ -43,7 +42,7 @@ class ClassSerializer(serializers.ModelSerializer):
         subject = Subject.objects.get(id=self.context["subject_id"])
         tutor = self.context["profile"]
         
-        return Class.objects.create(
+        return AcademyClass.objects.create(
             subject=subject,
             tutor=tutor,
             **validated_data,

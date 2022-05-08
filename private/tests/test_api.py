@@ -1,12 +1,12 @@
 from decimal import Decimal
 from django.db import IntegrityError
 from django.urls import reverse
-from private.tests.factories import PrivateClassFactory
 
 from rest_framework.test import APITestCase
 
 from education.tests.factories import EducationLevelFactory, SubjectFactory
 from private.models import PrivateClass, PrivateClassOffer, PrivateClassOfferStatus
+from private.tests.factories import PrivateClassFactory
 from profile.models import UserType
 from profile.tests.factories import ProfileFactory, TokenFactory
 
@@ -32,13 +32,13 @@ class PrivateClassesTestCases(APITestCase):
       "subject": self.subject.id,
       "education_level": self.education_level.id,
       "description": "A description",
-      "rate": Decimal("0.00"),
+      "rate_per_hour": Decimal("0.00"),
     }
 
     expected_resp = {
       "subject": self.subject.id,
       "education_level_name": self.education_level.name,
-      "rate": "0.00",
+      "rate_per_hour": "0.00",
     }
 
     resp = self.client.post(self.PRIVATE_CLASS_URL, data=req, HTTP_AUTHORIZATION=f"Token {self.student_token}")
