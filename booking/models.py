@@ -10,6 +10,12 @@ class FrequencyChoices(models.TextChoices):
     WEEKLY = ("W", "Weekly")
     MONTHLY = ("M", "Monthly")
 
+class ClassStatus(models.TextChoices):
+    PENDING = ("P", "Pending Registration")
+    STARTED = ("S", "Class has started")
+    ENDED = ("E", "Class Has Ended")
+    CANCELLED = ("C", "Cancelled")
+
 class Class(BaseModel):
     duration = models.DecimalField(decimal_places=2,max_digits=4, default=Decimal("0.00"))
     frequency = models.CharField(max_length=1, choices=FrequencyChoices.choices, null=False)
@@ -21,6 +27,8 @@ class Class(BaseModel):
     rate_per_hour = models.DecimalField(decimal_places=2, max_digits=15, default=Decimal("0.00"))
     student_capacity = models.PositiveSmallIntegerField(null = True)
     description = models.TextField(null=True)
+    start_date = models.DateField(null=True)
+    status = models.CharField(max_length = 2, choices = ClassStatus.choices, default=ClassStatus.PENDING)
 
     @property
     def price_per_session(self):
