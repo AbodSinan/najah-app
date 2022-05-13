@@ -77,6 +77,32 @@ class TestRegister(APITestCase):
         resp = self.client.login(email=login_req["email"], password=login_req["password"])
         self.assertTrue(resp)
 
+    def test_register_same_email(self):
+        request = {
+            "email" : "Test@email.com",
+            "first_name": "John",
+            "last_name": "Doe",
+            "password": "passwer1234",
+            "password_2": "passwer1234",
+            "user_type": "S",
+        }
+
+        resp = self.client.post(self.REGISTER_URL, data=request)
+        self.assertEqual(resp.status_code, 201)
+        self.assertEqual(User.objects.count(), 1)
+
+        request = {
+            "email" : "Test@email.com",
+            "first_name": "Lang",
+            "last_name": "wong",
+            "password": "passwer1234",
+            "password_2": "passwer1234",
+            "user_type": "S",
+        }
+        resp = self.client.post(self.REGISTER_URL, data=request)
+        self.assertEqual(resp.status_code, 400)
+        self.assertTrue("email" in resp.json())
+
     def test_register_then_login_failed(self):
         request = {
             "email" : "Test@email.com",
