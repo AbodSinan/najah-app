@@ -15,7 +15,7 @@ class TestRegister(APITestCase):
             "last_name": "Doe",
             "username": "JohnDoe69",
             "password": "passwer1234",
-            "password2": "passwer1234",
+            "password_2": "passwer1234",
             "user_type": "S",
         }
 
@@ -30,7 +30,7 @@ class TestRegister(APITestCase):
             "last_name": "Doe",
             "username": "JohnDoe69",
             "password": "passwer1234",
-            "password2": "passwer1234",
+            "password_2": "passwer1234",
         }
         
         resp = self.client.post(self.REGISTER_URL, data=request)
@@ -45,7 +45,7 @@ class TestRegister(APITestCase):
             "last_name": "Doe",
             "username": "JohnDoe69",
             "password": "passwer1234",
-            "password2": "passwer1234",
+            "password_2": "passwer1234",
             "user_type": "Z",
         }
         
@@ -61,7 +61,7 @@ class TestRegister(APITestCase):
             "last_name": "Doe",
             "username": "JohnDoe69",
             "password": "passwer1234",
-            "password2": "passwer1234",
+            "password_2": "passwer1234",
             "user_type": "S",
         }
 
@@ -84,7 +84,7 @@ class TestRegister(APITestCase):
             "last_name": "Doe",
             "username": "JohnDoe69",
             "password": "passwer1234",
-            "password2": "passwer1234",
+            "password_2": "passwer1234",
             "user_type": "S",
         }
 
@@ -108,7 +108,7 @@ class TestRegister(APITestCase):
             "last_name": "Doe",
             "username": "JohnDoe69",
             "password": "passwer1234",
-            "password2": "passwer1234",
+            "password_2": "passwer1234",
             "user_type": "S",
         }
 
