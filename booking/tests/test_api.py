@@ -8,8 +8,8 @@ from rest_framework.test import APITestCase
 from payment.models import Payment
 from profile.tests.factories import ProfileFactory, TokenFactory
 from profile.models import UserType
-from booking.models import Class, Booking
-from booking.tests.factories import ClassFactory, BookingFactory
+from booking.models import AcademyClass, Booking
+from booking.tests.factories import AcademyClassFactory, BookingFactory
 
 class TestBookingViewSet(APITestCase):
     def setUp(self):
@@ -18,8 +18,8 @@ class TestBookingViewSet(APITestCase):
         self.student_profile1 = ProfileFactory(user_type=UserType.STUDENT, education_level=self.education_level)
         self.student_profile2 = ProfileFactory(user_type=UserType.STUDENT, education_level=self.education_level)
         self.subject = SubjectFactory(education_level=self.education_level)
-        self.subject_class = ClassFactory(subject=self.subject, tutor=self.tutor_profile, duration=Decimal("1.50"), frequency="W", no_of_times=2, rate_per_hour= Decimal("10.00"))
-        self.subject_class2 = ClassFactory(subject=self.subject, tutor=self.tutor_profile, duration=Decimal("1.50"), frequency="W", no_of_times=2, rate_per_hour= Decimal("10.00"))
+        self.subject_class = AcademyClassFactory(subject=self.subject, tutor=self.tutor_profile, duration=Decimal("1.50"), frequency="W", no_of_times=2, rate_per_hour= Decimal("10.00"))
+        self.subject_class2 = AcademyClassFactory(subject=self.subject, tutor=self.tutor_profile, duration=Decimal("1.50"), frequency="W", no_of_times=2, rate_per_hour= Decimal("10.00"))
         self.booking1 = BookingFactory(booking_class=self.subject_class, student=self.student_profile1)
         self.booking2 = BookingFactory(booking_class=self.subject_class, student=self.student_profile2)
 
@@ -52,7 +52,7 @@ class TestBookingViewSet(APITestCase):
         self.assertEqual(resp.status_code, 201)
         self.assertEqual(resp.json()["payment"]["amount"], "30")
 
-        last_class = Class.objects.get(id=self.subject_class.pk)
+        last_class = AcademyClass.objects.get(id=self.subject_class.pk)
 
         self.assertEqual(Booking.objects.filter(booking_class=last_class).count(), 3)
         self.assertEqual(Payment.objects.count(), 3)
@@ -97,7 +97,7 @@ class TestBookingViewSet(APITestCase):
     def test_list_user_classes(self):
         # Create a bunch of new classes, tutors and students
         tutor_profile2 = ProfileFactory(user_type=UserType.TUTOR, education_level=self.education_level)
-        subject_class3 = ClassFactory(subject=self.subject, tutor=tutor_profile2, duration=Decimal("1.50"), frequency="W", no_of_times=2, rate_per_hour= Decimal("10.00"))
+        subject_class3 = AcademyClassFactory(subject=self.subject, tutor=tutor_profile2, duration=Decimal("1.50"), frequency="W", no_of_times=2, rate_per_hour= Decimal("10.00"))
         self.subject_class.students.add(self.student_profile1)
         self.subject_class2.students.add(self.student_profile2)
         subject_class3.students.add(self.student_profile1)
