@@ -1,5 +1,5 @@
 from django.urls import reverse
-from education.models import SubjectCategory
+from education.models import Subject
 
 from rest_framework.test import APITestCase
 
@@ -32,3 +32,19 @@ class TestSubjectViewSet(APITestCase):
     def test_subject_list(self):
         response = self.client.get(self.SUBJECT_LIST_URL)
         self.assertEqual(len(response.json()), 2)
+
+    def test_create_subject(self):
+        request_data = {
+            "name": "subject new",
+            "description": "Some subject",
+            "subject_category": self.subject_category.id,
+            "education_level": self.education_level.id,
+            "subject_tags": [self.subject_tag1.id, self.subject_tag3.id],
+        }
+        response = self.client.post(self.SUBJECT_LIST_URL, data=request_data)
+        self.assertEqual(response.status_code, 201)
+
+        new_subject = Subject.objects.last()
+        self.assertEqual(new_subject.name, "subject new")
+        self.assertEqual(new_subject.subject_tags.count(), 2)
+        self.assertEqual(new_subject.subject_category.id, self.subject_category.id)

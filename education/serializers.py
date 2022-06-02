@@ -18,8 +18,8 @@ class SubjectCategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class SubjectSerializer(serializers.ModelSerializer):
-    subject_category = SubjectCategorySerializer()
-    subject_tags = SubjectTagSerializer(many=True)
+    subject_category = serializers.PrimaryKeyRelatedField(queryset=SubjectCategory.objects.all())
+    subject_tags = serializers.PrimaryKeyRelatedField(many=True, queryset=SubjectTag.objects.all())
     class Meta:
         model = Subject
         fields = "__all__"
