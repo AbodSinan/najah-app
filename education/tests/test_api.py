@@ -48,3 +48,28 @@ class TestSubjectViewSet(APITestCase):
         self.assertEqual(new_subject.name, "subject new")
         self.assertEqual(new_subject.subject_tags.count(), 2)
         self.assertEqual(new_subject.subject_category.id, self.subject_category.id)
+
+    def test_create_subject_no_tags(self):
+        request_data = {
+            "name": "subject new",
+            "description": "Some subject",
+            "subject_category": self.subject_category.id,
+            "education_level": self.education_level.id,
+        }
+        response = self.client.post(self.SUBJECT_LIST_URL, data=request_data)
+        self.assertEqual(response.status_code, 201)
+
+        new_subject = Subject.objects.last()
+        self.assertEqual(new_subject.name, "subject new")
+        self.assertEqual(new_subject.subject_tags.count(), 0)
+        self.assertEqual(new_subject.subject_category.id, self.subject_category.id)
+
+    def test_create_subject_no_category_fail(self):
+        request_data = {
+            "name": "subject new",
+            "description": "Some subject",
+            "education_level": self.education_level.id,
+            "subject_tags": [self.subject_tag1.id, self.subject_tag3.id],
+        }
+        response = self.client.post(self.SUBJECT_LIST_URL, data=request_data)
+        self.assertEqual(response.status_code, 400)
