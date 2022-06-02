@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.test import override_settings
 from django.urls import reverse
 from education.tests.factories import EducationLevelFactory, SubjectFactory
 
@@ -79,6 +80,8 @@ class TestBookingViewSet(APITestCase):
 
         self.assertEqual(resp.status_code, 201)
     
+
+    @override_settings(IS_USER_TYPE_ENABLED=True)
     def test_create_class_student(self):
         student_token = TokenFactory(user = self.student_profile1.user)
         url = reverse("booking:subject_classes", kwargs={"subject_id": self.subject.pk})

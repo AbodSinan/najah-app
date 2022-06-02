@@ -158,4 +158,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+IS_USER_TYPE_ENABLED = False
+
 django_on_heroku.settings(locals())

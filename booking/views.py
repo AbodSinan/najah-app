@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from rest_framework import generics
 from rest_framework.exceptions import ValidationError
 
@@ -10,7 +12,7 @@ class ClassBookingListView(generics.ListCreateAPIView):
     serializer_class = BookingSerializer
     
     def get_queryset(self):
-        if self.request.user.profile.user_type == UserType.TUTOR:
+        if not settings.IS_USER_TYPE_ENABLED or self.request.user.profile.user_type == UserType.TUTOR:
             return Booking.objects.filter(
                 booking_class=self.kwargs["booking_class"],
                 booking_class__tutor=self.request.user.profile,
@@ -43,7 +45,7 @@ class SubjectClassListView(generics.ListCreateAPIView):
         return context
 
     def perform_create(self, serializer):
-        if not self.request.user or self.request.user.profile.user_type == UserType.STUDENT:
+        if settings.IS_USER_TYPE_ENABLED and self.request.user.profile.user_type == UserType.STUDENT:
             raise ValidationError("Students cannot create a class!")
         else:
             return super().perform_create(serializer)
