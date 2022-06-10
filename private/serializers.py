@@ -15,6 +15,7 @@ class PrivateClassSerializer(serializers.ModelSerializer):
   education_level_name = serializers.CharField(read_only=True)
   student = ProfileSerializer(read_only=True)
   tutor = ProfileSerializer(read_only=True)
+
   class Meta:
     model = PrivateClass
     fields = "__all__"
