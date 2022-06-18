@@ -11,58 +11,51 @@ class TestRegister(APITestCase):
     def test_register_user_success(self):
         request = {
             "email" : "Test@email.com",
-            "first_name": "John",
-            "last_name": "Doe",
-            "username": "JohnDoe69",
             "password": "passwer1234",
             "password_2": "passwer1234",
-            "user_type": "S",
         }
 
         resp = self.client.post(self.REGISTER_URL, data=request)
         self.assertEqual(resp.status_code, 201)
         self.assertEqual(User.objects.count(), 1)
 
-    def test_register_no_user_type(self):
+    def test_register_user_with_name_success(self):
         request = {
             "email" : "Test@email.com",
             "first_name": "John",
             "last_name": "Doe",
-            "username": "JohnDoe69",
             "password": "passwer1234",
             "password_2": "passwer1234",
         }
-        
-        resp = self.client.post(self.REGISTER_URL, data=request)
-        self.assertEqual(resp.status_code, 400)
-        self.assertTrue('user_type' in resp.data)
-        self.assertEqual(User.objects.count(), 0)
 
-    def test_register_wrong_user_type(self):
+        resp = self.client.post(self.REGISTER_URL, data=request)
+        self.assertEqual(resp.status_code, 201)
+        self.assertEqual(User.objects.count(), 1)
+        
+        user_obj = User.objects.last()
+        self.assertEqual(user_obj.first_name, "John")
+        self.assertEqual(user_obj.last_name, "Doe")
+
+    def test_register_different_passwords(self):
         request = {
             "email" : "Test@email.com",
-            "first_name": "John",
-            "last_name": "Doe",
             "username": "JohnDoe69",
             "password": "passwer1234",
-            "password_2": "passwer1234",
+            "password_2": "passwer123",
             "user_type": "Z",
         }
         
         resp = self.client.post(self.REGISTER_URL, data=request)
+        
+        self.assertTrue("password" in resp.json())
         self.assertEqual(resp.status_code, 400)
-        self.assertTrue('user_type' in resp.data)
         self.assertEqual(User.objects.count(), 0)
 
     def test_register_then_login(self):
         request = {
             "email" : "Test@email.com",
-            "first_name": "John",
-            "last_name": "Doe",
-            "username": "JohnDoe69",
             "password": "passwer1234",
             "password_2": "passwer1234",
-            "user_type": "S",
         }
 
         resp = self.client.post(self.REGISTER_URL, data=request)
@@ -80,11 +73,8 @@ class TestRegister(APITestCase):
     def test_register_same_email(self):
         request = {
             "email" : "Test@email.com",
-            "first_name": "John",
-            "last_name": "Doe",
             "password": "passwer1234",
             "password_2": "passwer1234",
-            "user_type": "S",
         }
 
         resp = self.client.post(self.REGISTER_URL, data=request)
@@ -93,11 +83,8 @@ class TestRegister(APITestCase):
 
         request = {
             "email" : "Test@email.com",
-            "first_name": "Lang",
-            "last_name": "wong",
             "password": "passwer1234",
             "password_2": "passwer1234",
-            "user_type": "S",
         }
         resp = self.client.post(self.REGISTER_URL, data=request)
         self.assertEqual(resp.status_code, 400)
@@ -106,12 +93,8 @@ class TestRegister(APITestCase):
     def test_register_then_login_failed(self):
         request = {
             "email" : "Test@email.com",
-            "first_name": "John",
-            "last_name": "Doe",
-            "username": "JohnDoe69",
             "password": "passwer1234",
             "password_2": "passwer1234",
-            "user_type": "S",
         }
 
         resp = self.client.post(self.REGISTER_URL, data=request)
