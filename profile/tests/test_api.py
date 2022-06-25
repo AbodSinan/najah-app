@@ -4,6 +4,7 @@ from rest_framework.test import APITestCase
 from profile.tests.factories import ProfileFactory, UserFactory, TokenFactory
 
 class ProfileTestCase(APITestCase):
+  OWN_PROFILE_URL = reverse("profile:profile")
   def setUp(self):
     self.user_1 = UserFactory(first_name="John Doe", email="JohnDoe@testing.com")
     self.user_2 = UserFactory(first_name="Jane Doe", email="JaneDoe@testing.com")
@@ -19,3 +20,21 @@ class ProfileTestCase(APITestCase):
     self.assertEqual(resp.status_code, 200)
     self.assertEqual(resp_data["id"], self.profile_1.pk)
     self.assertEqual(resp_data["first_name"], "John Doe")
+
+  def test_update_profile_profile_fields(self):
+    req_data = {"age": 500, "description": "AM not gut"}
+    resp = self.client.put(self.OWN_PROFILE_URL, data=req_data)
+    self.assertEqual(resp.status_code, 200)
+    self.profile_1.refresh_from_db()
+
+    self.assertEqual(self.profile_1.age, 500)
+    self.assertEqual(self.profile_1.description, "AM not gut")
+
+  def test_update_profile_user_fields(self):
+    req_data = {"last_name": "Doe Mama", "email": "doe@mama.com"}
+    resp = self.client.put(self.OWN_PROFILE_URL, data=req_data)
+    self.assertEqual(resp.status_code, 200)
+    self.profile_1.refresh_from_db()
+
+    self.assertEqual(self.profile_1.user.last_name, "Doe Mama")
+    self.assertEqual(self.profile_1.user.email, "doe@mama.com")
