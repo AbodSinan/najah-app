@@ -58,6 +58,7 @@ class ConfirmPrivateClassTutorView(views.APIView):
     accepted_offer.save()
 
     private_class.tutor = Profile.objects.get(id=tutor_id)
+    private_class.status = PrivateClassStatus.ONGOING
     private_class.save()
 
     return Response(status=status.HTTP_200_OK)
