@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from education.serializers import SubjectSerializer
 from private.models import PrivateClass, PrivateClassOffer
 from profile.serializers import ProfileSerializer
 
@@ -10,6 +9,11 @@ class PrivateClassOfferSerializer(serializers.ModelSerializer):
   class Meta:
     model = PrivateClassOffer
     fields = "__all__"
+
+  def create(self, validated_data):
+    if validated_data["tutor"].pk == validated_data["private_class"].student.pk:
+      raise serializers.ValidationError("Student cannot offer to tutor own class")
+    return super().create(validated_data)
 
 class PrivateClassSerializer(serializers.ModelSerializer):
   education_level_name = serializers.CharField(read_only=True)

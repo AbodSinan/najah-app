@@ -64,6 +64,17 @@ class PrivateClassesTestCases(APITestCase):
     self.assertEqual(PrivateClassOffer.objects.count(), 1)
     self.assertEqual(PrivateClass.objects.last().privateclassoffer_set.count(), 1)
 
+  def test_private_class_offer_own_student(self):
+    private_class = PrivateClassFactory(student=self.student_profile1, education_level=self.education_level)
+
+    req = {
+      "private_class" : private_class.id,
+    }
+
+    resp = self.client.post(self.TUTOR_OFFER_URL, data=req, HTTP_AUTHORIZATION=f"Token {self.student_token}")
+    self.assertEqual(resp.status_code, 400)
+    self.assertEqual(resp.json()[0], "Student cannot offer to tutor own class")
+
   def test_private_class_multiple_offers(self):
     private_class = PrivateClassFactory(student=self.student_profile1, education_level=self.education_level)
     tutor2 = ProfileFactory(user_type=UserType.TUTOR, education_level=self.education_level)
