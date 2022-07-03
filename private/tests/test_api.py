@@ -4,8 +4,9 @@ from django.urls import reverse
 
 from rest_framework.test import APITestCase
 
+from booking.models import ClassStatus
 from education.tests.factories import EducationLevelFactory, SubjectFactory
-from private.models import PrivateClass, PrivateClassOffer, PrivateClassOfferStatus, PrivateClassStatus
+from private.models import PrivateClass, PrivateClassOffer, PrivateClassOfferStatus
 from private.tests.factories import PrivateClassFactory
 from profile.models import UserType
 from profile.tests.factories import ProfileFactory, TokenFactory
@@ -141,4 +142,4 @@ class PrivateClassesTestCases(APITestCase):
     self.assertEqual(PrivateClass.objects.last().tutor.id, tutor2.id)
 
     private_class.refresh_from_db()
-    self.assertEqual(int(private_class.status), PrivateClassStatus.ONGOING.value)
+    self.assertEqual(int(private_class.status), ClassStatus.ONGOING.value)

@@ -1,7 +1,8 @@
 from rest_framework import viewsets, views, status
 from rest_framework.response import Response
 
-from private.models import PrivateClass, PrivateClassOffer, PrivateClassStatus, PrivateClassOfferStatus
+from booking.models import ClassStatus
+from private.models import PrivateClass, PrivateClassOffer, PrivateClassOfferStatus
 from private.serializers import ConfirmTutorSerializer, PrivateClassOfferSerializer, PrivateClassSerializer, StudentPrivateClassSerializer
 from profile.models import Profile
 
@@ -58,7 +59,7 @@ class ConfirmPrivateClassTutorView(views.APIView):
     accepted_offer.save()
 
     private_class.tutor = Profile.objects.get(id=tutor_id)
-    private_class.status = PrivateClassStatus.ONGOING
+    private_class.status = ClassStatus.STARTED
     private_class.save()
 
     return Response(status=status.HTTP_200_OK)
