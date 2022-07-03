@@ -6,11 +6,6 @@ from booking.models import Class
 from education.models import BaseModel
 from profile.models import Profile
 
-class PrivateClassStatus(models.IntegerChoices):
-  PENDING_TUTOR_SELECTION = 10
-  ONGOING = 20
-  COMPLETE = 30
-
 class PrivateClassOfferStatus(models.IntegerChoices):
   PENDING = 10
   CANCELLED = 20

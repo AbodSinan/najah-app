@@ -11,7 +11,7 @@ from profile.models import UserType
 
 class ClassBookingListView(generics.ListCreateAPIView):
     serializer_class = BookingSerializer
-    
+
     def get_queryset(self):
         if not settings.IS_USER_TYPE_ENABLED or self.request.user.profile.user_type == UserType.TUTOR:
             return Booking.objects.filter(
@@ -27,9 +27,8 @@ class ClassBookingListView(generics.ListCreateAPIView):
         context["student"] = self.request.user.profile
 
         return context
-        
 
-    
+
 class SubjectClassListView(generics.ListCreateAPIView):
     serializer_class = AcademyClassSerializer
 
