@@ -58,6 +58,14 @@ class TestBookingViewSet(APITestCase):
         self.assertEqual(Booking.objects.filter(booking_class=last_class).count(), 3)
         self.assertEqual(Payment.objects.count(), 3)
 
+    def test_create_booking_by_own_tutor(self):
+        url = reverse("booking:class_bookings", kwargs={"booking_class": self.subject_class.pk})
+        req = {}
+
+        resp = self.client.post(url, data=req, HTTP_AUTHORIZATION=f"Token {self.token.key}")
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.data[0], "Tutor cannot book in own class")
+
     def test_list_classes_subject(self):
         url = reverse("booking:subject_classes", kwargs={"subject_id": self.subject.pk})
 
