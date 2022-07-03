@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Q
 
 from rest_framework import generics
 from rest_framework.exceptions import ValidationError
@@ -54,10 +55,13 @@ class UserClassListCreateView(generics.ListCreateAPIView):
     serializer_class = AcademyClassSerializer
 
     def get_queryset(self):
-        if self.request.user.profile.user_type == UserType.TUTOR:
-            return AcademyClass.objects.filter(tutor__user=self.request.user)
+        if settings.IS_USER_TYPE_ENABLED:
+            if self.request.user.profile.user_type == UserType.TUTOR:
+                return AcademyClass.objects.filter(tutor__user=self.request.user)
+            else:
+                return AcademyClass.objects.filter(students__user=self.request.user)
         else:
-            return AcademyClass.objects.filter(students__user=self.request.user)
+            return AcademyClass.objects.filter(Q(tutor__user=self.request.user)|Q(students__user=self.request.user))
 
 class AcademyClassListView(generics.ListAPIView):
     serializer_class = AcademyClassSerializer
