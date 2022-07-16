@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -13,6 +15,7 @@ class Gender(models.TextChoices):
 
 class Profile(BaseModel):
     """ An extension to the user model, containing more info """
+    uuid = models.UUIDField(unique=True, default=uuid4)
     user_type = models.CharField(max_length=1, choices=UserType.choices, default=UserType.STUDENT)
     age = models.IntegerField(null=True)
     gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)

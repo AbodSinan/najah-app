@@ -1,4 +1,5 @@
 from decimal import Decimal
+from uuid import uuid4
 from django.db import models
 
 from education.models import BaseModel, Subject, EducationLevel
@@ -21,6 +22,7 @@ class Class(BaseModel):
     """
     An abstract model containing information about a class, shared between academic and private classes
     """
+    uuid = models.UUIDField(unique=True, default=uuid4)
     duration = models.DecimalField(decimal_places=2,max_digits=4, default=Decimal("0.00"))
     frequency = models.CharField(max_length=1, choices=FrequencyChoices.choices, null=True)
     no_of_times = models.IntegerField(default=0)

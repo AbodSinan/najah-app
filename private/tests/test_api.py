@@ -52,6 +52,14 @@ class PrivateClassesTestCases(APITestCase):
     for key in expected_resp.keys():
       self.assertEqual(expected_resp[key], resp.json()[key])
 
+  def test_private_class_list(self):
+    education_level_2 = EducationLevelFactory()
+    PrivateClassFactory(student=self.student_profile1, education_level=self.education_level)
+    PrivateClassFactory(student=self.student_profile2, education_level=education_level_2)
+
+    resp = self.client.post(self.PRIVATE_CLASS_URL, HTTP_AUTHORIZATION=f"Token {self.student_token}")
+    print(resp.json())
+
   def test_private_class_offer_create(self):
     private_class = PrivateClassFactory(student=self.student_profile1, education_level=self.education_level)
 
@@ -142,4 +150,4 @@ class PrivateClassesTestCases(APITestCase):
     self.assertEqual(PrivateClass.objects.last().tutor.id, tutor2.id)
 
     private_class.refresh_from_db()
-    self.assertEqual(int(private_class.status), ClassStatus.ONGOING.value)
+    self.assertEqual(private_class.status, ClassStatus.STARTED)
