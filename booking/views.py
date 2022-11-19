@@ -60,7 +60,7 @@ class UserClassListCreateView(generics.ListCreateAPIView):
             else:
                 return AcademyClass.objects.filter(students__user=self.request.user)
         else:
-            return AcademyClass.objects.filter(Q(tutor__user=self.request.user)|Q(students__user=self.request.user))
+            return AcademyClass.objects.filter(Q(tutor__user=self.request.user)|Q(students__user=self.request.user)).distinct()
 
 class AcademyClassListView(generics.ListAPIView):
     serializer_class = AcademyClassSerializer

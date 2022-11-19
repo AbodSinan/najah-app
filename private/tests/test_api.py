@@ -58,7 +58,7 @@ class PrivateClassesTestCases(APITestCase):
     PrivateClassFactory(student=self.student_profile2, education_level=education_level_2)
 
     resp = self.client.post(self.PRIVATE_CLASS_URL, HTTP_AUTHORIZATION=f"Token {self.student_token}")
-    print(resp.json())
+    self.assertEqual(resp.status_code, 201)
 
   def test_private_class_offer_create(self):
     private_class = PrivateClassFactory(student=self.student_profile1, education_level=self.education_level)
