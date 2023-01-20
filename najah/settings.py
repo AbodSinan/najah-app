@@ -102,7 +102,6 @@ DATABASES = {
         "PASSWORD": "5WFz62MHVTXutdR",
         "HOST": "najah-db.czpbbghrmffu.ap-southeast-1.rds.amazonaws.com",
         "PORT": os.getenv("DB_PORT_AUTH", 5432),
-        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
