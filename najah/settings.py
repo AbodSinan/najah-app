@@ -96,7 +96,12 @@ WSGI_APPLICATION = 'najah.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': "django.db.backends.postgresql",
+        "NAME": "najah-db",
+        "USER": "postgres",
+        "PASSWORD": "5WFz62MHVTXutdR",
+        "HOST": "najah-db.czpbbghrmffu.ap-southeast-1.rds.amazonaws.com",
+        "PORT": os.getenv("DB_PORT_AUTH", 5432),
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
