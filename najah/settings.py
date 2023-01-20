@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'najah.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': "django.db.backends.postgresql",
-        "NAME": "najah-db",
+        "NAME": "najah",
         "USER": "postgres",
         "PASSWORD": "5WFz62MHVTXutdR",
         "HOST": "najah-db.czpbbghrmffu.ap-southeast-1.rds.amazonaws.com",
