@@ -23,6 +23,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from najah.webhooks import webhook
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,5 +32,6 @@ urlpatterns = [
     path("profile/", include((profile_urls, "profile"))),
     path('auth/', include((auth_urls, "auth"))),
     path('api-auth/' , include('rest_framework.urls')),
-    path('private/', include((private_urls, "private")))
+    path('private/', include((private_urls, "private"))),
+    path('webhook', webhook, name="webhook")
 ]
