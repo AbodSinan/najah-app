@@ -65,8 +65,9 @@ class AcademyClass(Class):
     tutor = models.ForeignKey(Profile, on_delete=models.PROTECT, related_name="classes_tutored")
 
 class BookingStatus(models.IntegerChoices):
-    PENDING = 10
-    CONFIRMED = 20
+    PENDING_TUTOR = 10
+    PENDING_PAYMENT = 20
+    CONFIRMED = 30
     CANCELLED = -10
 
 class Booking(BaseModel):
@@ -76,7 +77,7 @@ class Booking(BaseModel):
     student = models.ForeignKey(Profile, on_delete=models.PROTECT)
     booking_class = models.ForeignKey(AcademyClass, on_delete=models.PROTECT)
     payment = models.OneToOneField(Payment, on_delete=models.PROTECT)
-    status = models.IntegerField(BookingStatus, choices=BookingStatus.choices, default=BookingStatus.PENDING)
+    status = models.IntegerField(BookingStatus, choices=BookingStatus.choices, default=BookingStatus.PENDING_TUTOR)
 
 
     def __str__(self) -> str:
