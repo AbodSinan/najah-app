@@ -9,6 +9,8 @@ from profile.serializers import ProfileSerializer
 
 class BookingSerializer(serializers.ModelSerializer):
     payment = PaymentSerializer(read_only=True)
+    student = ProfileSerializer(read_only=True)
+
     class Meta:
         model = Booking
         fields = "__all__"
