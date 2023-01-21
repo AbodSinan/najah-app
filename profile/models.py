@@ -21,7 +21,7 @@ class Profile(BaseModel):
     gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     education_level = models.ForeignKey(EducationLevel, on_delete=models.SET_NULL, null=True)
-    description = models.TextField(null=True)
+    description = models.TextField(default="")
     image = models.ImageField(null=True)
 
     @property
