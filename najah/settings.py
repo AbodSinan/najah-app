@@ -100,12 +100,8 @@ WSGI_APPLICATION = 'najah.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': "django.db.backends.postgresql",
-        "NAME": "najah",
-        "USER": "postgres",
-        "PASSWORD": "5WFz62MHVTXutdR",
-        "HOST": "najah-db.czpbbghrmffu.ap-southeast-1.rds.amazonaws.com",
-        "PORT": os.getenv("DB_PORT_AUTH", 5432),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -167,5 +163,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 IS_USER_TYPE_ENABLED = False
+SKIP_PAYMENT = True
 
 django_on_heroku.settings(locals())
