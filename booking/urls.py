@@ -1,7 +1,7 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path
 
-from booking.views import AcceptClassBookingView,ClassBookingListView, AcademyClassListView, SubjectClassListView, UserClassListCreateView
+from booking.views import AcceptClassBookingView,ClassBookingListView, AcademyClassListView, SubjectClassListView, UserClassListCreateView, UpdateClassStatusView
 
 app_name = "booking"
 
@@ -13,6 +13,7 @@ url_patterns = [
     path("user-classes", UserClassListCreateView.as_view(), name="user_classes"),
     path("classes", AcademyClassListView.as_view(), name="class_list"),
     path("accept-booking", AcceptClassBookingView.as_view(), name="accept_booking"),
+    path("update-class-status", UpdateClassStatusView.as_view(), name="update_class_status")
 ]
 
 url_patterns+= api_router.urls

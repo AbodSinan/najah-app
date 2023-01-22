@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
-from booking.models import AcademyClass, Booking
+from booking.models import AcademyClass, Booking, ClassStatus
 from education.models import Subject
-from payment.models import Payment, PaymentType
 from payment.serializers import PaymentSerializer
 from profile.serializers import ProfileSerializer
 
@@ -51,3 +50,9 @@ class AcademyClassSerializer(serializers.ModelSerializer):
 class AcceptClassBookingSerializer(serializers.Serializer):
     booking_id = serializers.IntegerField()
     is_accepted = serializers.BooleanField()
+
+
+class UpdateClassStatusSerializer(serializers.Serializer):
+    class_id = serializers.IntegerField()
+    status = serializers.ChoiceField(choices=ClassStatus.choices)
+    class_type = serializers.ChoiceField(choices=["private", "academy"])

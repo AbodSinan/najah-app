@@ -6,8 +6,9 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 
 from booking.models import AcademyClass, Booking, BookingStatus
-from booking.serializers import BookingSerializer, AcademyClassSerializer, AcceptClassBookingSerializer
+from booking.serializers import BookingSerializer, AcademyClassSerializer, AcceptClassBookingSerializer, UpdateClassStatusSerializer
 from profile.models import UserType
+from private.models import PrivateClass
 
 
 class ClassBookingListView(generics.ListCreateAPIView):
@@ -87,5 +88,38 @@ class AcceptClassBookingView(views.APIView):
 
         booking.status = BookingStatus.PENDING_PAYMENT if is_accepted else BookingStatus.CANCELLED
         booking.save()
+
+        return Response(status=status.HTTP_200_OK)
+
+class UpdateClassStatusView(views.APIView):
+    def post(self, request):
+        serializer = UpdateClassStatusSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        class_id = serializer.data.get("class_id", None)
+        class_type = serializer.data.get("class_type", "academy")
+        if class_type == "academy":
+            try:
+                cls = AcademyClass.objects.get(id=class_id)
+            except AcademyClass.DoesNotExist:
+                return Response({"error": "Invalid booking_id"}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+            # Only allow tutors to update status for academy classes
+            if self.request.user.profile.id != cls.tutor.id:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        if class_type == "private":
+            try:
+                cls = PrivateClass.objects.get(id=class_id)
+            except PrivateClass.DoesNotExist:
+                return Response({"error": "Invalid booking_id"}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+            # Only allow students to update status for private classes
+            if self.request.user.profile.id != cls.student.id:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
+
+        status = serializer.data.get("status", None)
+
+        cls.status = status
+        cls.save()
 
         return Response(status=status.HTTP_200_OK)
