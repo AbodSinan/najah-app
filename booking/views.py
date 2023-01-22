@@ -117,9 +117,9 @@ class UpdateClassStatusView(views.APIView):
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
         
 
-        status = serializer.data.get("status", None)
+        new_status = serializer.data.get("status", None)
 
-        cls.status = status
+        cls.status = new_status
         cls.save()
 
         return Response(status=status.HTTP_200_OK)
