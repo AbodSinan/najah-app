@@ -1,5 +1,5 @@
 from decimal import Decimal
-
+import pdb
 from django.test import override_settings
 from django.urls import reverse
 from education.tests.factories import EducationLevelFactory, SubjectFactory
@@ -9,10 +9,11 @@ from rest_framework.test import APITestCase
 from payment.models import Payment
 from profile.tests.factories import ProfileFactory, TokenFactory
 from profile.models import UserType
-from booking.models import AcademyClass, Booking
+from booking.models import AcademyClass, Booking, BookingStatus
 from booking.tests.factories import AcademyClassFactory, BookingFactory
 
 class TestBookingViewSet(APITestCase):
+    ACCEPT_BOOKING_URL = reverse("booking:accept_booking")
     def setUp(self):
         self.education_level = EducationLevelFactory()
         self.tutor_profile = ProfileFactory(user_type=UserType.TUTOR, education_level=self.education_level)
@@ -51,12 +52,10 @@ class TestBookingViewSet(APITestCase):
         resp = self.client.post(url, data=req, HTTP_AUTHORIZATION=f"Token {student_token.key}")
         
         self.assertEqual(resp.status_code, 201)
-        self.assertEqual(resp.json()["payment"]["amount"], "30")
 
         last_class = AcademyClass.objects.get(id=self.subject_class.pk)
 
         self.assertEqual(Booking.objects.filter(booking_class=last_class).count(), 3)
-        self.assertEqual(Payment.objects.count(), 3)
 
     def test_create_booking_by_own_tutor(self):
         url = reverse("booking:class_bookings", kwargs={"booking_class": self.subject_class.pk})
@@ -131,3 +130,96 @@ class TestBookingViewSet(APITestCase):
         
         cls_ids = [x["id"] for x in resp2.json()]
         self.assertCountEqual(cls_ids, [self.subject_class.id, subject_class3.id])
+
+    def test_accept_booking_unauthorized(self):
+        tutor_profile2 = ProfileFactory(user_type=UserType.TUTOR, education_level=self.education_level)
+        tutor2_token = TokenFactory(user = tutor_profile2.user)
+
+        request = {
+            "booking_id": self.booking1.id,
+            "is_accepted": True,
+        }
+
+        resp = self.client.post(self.ACCEPT_BOOKING_URL, data=request, HTTP_AUTHORIZATION=f"Token {tutor2_token}")
+        self.assertEqual(resp.status_code, 401)
+
+    def test_accept_booking_tutor(self):
+        request = {
+            "booking_id": self.booking1.id,
+            "is_accepted": True,
+        }
+
+        resp = self.client.post(self.ACCEPT_BOOKING_URL, data=request, HTTP_AUTHORIZATION=f"Token {self.token}")
+        self.assertEqual(resp.status_code, 200)
+
+        self.booking1.refresh_from_db()
+        self.booking1.status = BookingStatus.PENDING_PAYMENT
+
+    def test_reject_booking_tutor(self):
+        request = {
+            "booking_id": self.booking1.id,
+            "is_accepted": False,
+        }
+
+        resp = self.client.post(self.ACCEPT_BOOKING_URL, data=request, HTTP_AUTHORIZATION=f"Token {self.token}")
+        self.assertEqual(resp.status_code, 200)
+
+        self.booking1.refresh_from_db()
+        self.booking1.status = BookingStatus.CANCELLED
+
+    @override_settings(SKIP_PAYMENT=True)
+    def test_skip_payment_accept_tutor(self):
+        # Create a normal booking
+        student_token = TokenFactory(user = self.student_profile1.user)
+        url = reverse("booking:class_bookings", kwargs={"booking_class": self.subject_class.pk})
+        req = {}
+
+        resp = self.client.post(url, data=req, HTTP_AUTHORIZATION=f"Token {student_token.key}")
+        
+        self.assertEqual(resp.status_code, 201)
+
+        last_class = AcademyClass.objects.get(id=self.subject_class.pk)
+
+        self.assertEqual(Booking.objects.filter(booking_class=last_class).count(), 3)
+
+        student_booking = Booking.objects.filter(student = self.student_profile1).last()
+        request = {
+            "booking_id": student_booking.id,
+            "is_accepted": True,
+        }
+
+        resp = self.client.post(self.ACCEPT_BOOKING_URL, data=request, HTTP_AUTHORIZATION=f"Token {self.token}")
+        self.assertEqual(resp.status_code, 200)
+
+        student_booking.refresh_from_db()
+        self.assertIsNone(student_booking.payment) # Booking has no payment
+        self.assertEqual(student_booking.status, BookingStatus.CONFIRMED) # Booking is immediately confirmed
+
+    @override_settings(SKIP_PAYMENT=False)
+    def test_no_skip_payment_accept_tutor(self):
+        # Create a normal booking
+        student_token = TokenFactory(user = self.student_profile1.user)
+        url = reverse("booking:class_bookings", kwargs={"booking_class": self.subject_class.pk})
+        req = {}
+
+        resp = self.client.post(url, data=req, HTTP_AUTHORIZATION=f"Token {student_token.key}")
+        
+        self.assertEqual(resp.status_code, 201)
+
+        last_class = AcademyClass.objects.get(id=self.subject_class.pk)
+
+        self.assertEqual(Booking.objects.filter(booking_class=last_class).count(), 3)
+
+        student_booking = Booking.objects.filter(student = self.student_profile1).last()
+        request = {
+            "booking_id": student_booking.id,
+            "is_accepted": True,
+        }
+
+        resp = self.client.post(self.ACCEPT_BOOKING_URL, data=request, HTTP_AUTHORIZATION=f"Token {self.token}")
+        self.assertEqual(resp.status_code, 200)
+
+
+        student_booking.refresh_from_db()
+        self.assertEqual(Payment.objects.filter(booking=student_booking).count(), 1)
+        self.assertEqual(student_booking.status, BookingStatus.PENDING_PAYMENT)

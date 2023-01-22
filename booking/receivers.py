@@ -1,8 +1,25 @@
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
-from booking.models import BookingStatus
+from django.conf import settings
+from booking.models import Booking, BookingStatus
 
-from payment.models import Payment, PaymentStatus
+from payment.models import Payment, PaymentStatus, PaymentType
+
+@receiver(post_save, sender=Booking)
+def process_booking(sender, **kwargs):
+  instance = kwargs.get("instance")
+
+  if instance.status == BookingStatus.PENDING_PAYMENT and not instance.payment:
+    if settings.SKIP_PAYMENT:
+      instance.status = BookingStatus.CONFIRMED
+      instance.save()
+    else:
+      payment = Payment.objects.create(
+          amount=instance.booking_class.total_price,
+          type=PaymentType.CASH
+      )
+      instance.payment = payment
+      instance.save()
 
 @receiver(post_save, sender=Payment)
 def confirm_student_class_payment(sender, **kwargs):

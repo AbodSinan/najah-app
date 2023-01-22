@@ -22,14 +22,8 @@ class BookingSerializer(serializers.ModelSerializer):
         if booking_class.tutor.pk == self.context["student"].pk:
             raise serializers.ValidationError("Tutor cannot book in own class")
 
-        payment = Payment.objects.create(
-            amount=booking_class.total_price,
-            type=PaymentType.CASH
-        )
-
         booking = Booking.objects.create(
             booking_class = booking_class,
-            payment = payment,
             student = self.context["student"]
         )
         
@@ -53,3 +47,7 @@ class AcademyClassSerializer(serializers.ModelSerializer):
             tutor=tutor,
             **validated_data,
         )
+
+class AcceptClassBookingSerializer(serializers.Serializer):
+    booking_id = serializers.IntegerField()
+    is_accepted = serializers.BooleanField()

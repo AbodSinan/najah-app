@@ -1,11 +1,12 @@
 from django.conf import settings
 from django.db.models import Q
 
-from rest_framework import generics
+from rest_framework import generics, views, status
+from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 
-from booking.models import AcademyClass, Booking
-from booking.serializers import BookingSerializer, AcademyClassSerializer
+from booking.models import AcademyClass, Booking, BookingStatus
+from booking.serializers import BookingSerializer, AcademyClassSerializer, AcceptClassBookingSerializer
 from profile.models import UserType
 
 
@@ -65,3 +66,26 @@ class UserClassListCreateView(generics.ListCreateAPIView):
 class AcademyClassListView(generics.ListAPIView):
     serializer_class = AcademyClassSerializer
     queryset = AcademyClass.objects.all()
+
+class AcceptClassBookingView(views.APIView):
+    def post(self, request):
+        serializer = AcceptClassBookingSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        booking_id = serializer.data.get("booking_id", None)
+
+        try:
+            booking = Booking.objects.get(id=booking_id)
+        except Booking.DoesNotExist:
+            return Response({"error": "Invalid booking_id"}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        
+        # Only allow tutors to accept/reject bookings
+        if self.request.user.profile.id != booking.booking_class.tutor.id:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        is_accepted = serializer.data.get("is_accepted", None)
+
+        booking.status = BookingStatus.PENDING_PAYMENT if is_accepted else BookingStatus.CANCELLED
+        booking.save()
+
+        return Response(status=status.HTTP_200_OK)

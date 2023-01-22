@@ -76,7 +76,7 @@ class Booking(BaseModel):
     """
     student = models.ForeignKey(Profile, on_delete=models.PROTECT)
     booking_class = models.ForeignKey(AcademyClass, on_delete=models.PROTECT)
-    payment = models.OneToOneField(Payment, on_delete=models.PROTECT)
+    payment = models.OneToOneField(Payment, null=True, on_delete=models.PROTECT)
     status = models.IntegerField(BookingStatus, choices=BookingStatus.choices, default=BookingStatus.PENDING_TUTOR)
 
 
