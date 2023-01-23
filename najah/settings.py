@@ -12,11 +12,23 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
-import django_on_heroku
+import boto3
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+
+AWS_REGION="ap-southeast-1"
+boto3.setup_default_session(region_name=AWS_REGION)
+ssm = boto3.client('ssm')
+
+response = ssm.get_parameters(
+    Names=['S3_STORAGE_BUCKET_NAME', 'S3_SECRET_ACCESS_KEY', 'S3_ACCESS_KEY_ID'],
+    WithDecryption=True
+)
+
+AWS_PARAMS = {x['Name']: x['Value'] for x in response['Parameters']}
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -111,7 +123,7 @@ DATABASES = {
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", None)
+AWS_STORAGE_BUCKET_NAME = AWS_PARAMS.get("S3_STORAGE_BUCKET_NAME", None)
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES" : [
@@ -166,5 +178,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 IS_USER_TYPE_ENABLED = False
 SKIP_PAYMENT = True
-
-django_on_heroku.settings(locals())
