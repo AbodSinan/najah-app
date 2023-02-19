@@ -1,10 +1,11 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from rest_framework.authtoken.models import Token
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
-from profile.models import UserType, Profile
+from profile.models import Profile
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(
@@ -41,10 +42,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password_2 = serializers.CharField(write_only=True, required=True)
+    token = serializers.CharField(read_only=True)
+    user_id = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User
-        fields = ('password', 'password_2', 'email', "first_name", "last_name")
+        fields = ('password', 'password_2', 'email', 'user_id', 'token')
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_2']:
@@ -67,4 +70,14 @@ class RegisterSerializer(serializers.ModelSerializer):
             user = user,
         )
 
-        return user
+        # Generate a token for the user
+        token, _ = Token.objects.get_or_create(user=user)
+
+        # Create a dictionary with the user and token information
+        user_data = {
+            'user_id': user.id,
+            'email': user.email,
+            'token': token.key
+        }
+
+        return user_data

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.urls import reverse
 
+from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
 class TestRegister(APITestCase):
@@ -22,8 +23,6 @@ class TestRegister(APITestCase):
     def test_register_user_with_name_success(self):
         request = {
             "email" : "Test@email.com",
-            "first_name": "John",
-            "last_name": "Doe",
             "password": "passwer1234",
             "password_2": "passwer1234",
         }
@@ -33,8 +32,9 @@ class TestRegister(APITestCase):
         self.assertEqual(User.objects.count(), 1)
         
         user_obj = User.objects.last()
-        self.assertEqual(user_obj.first_name, "John")
-        self.assertEqual(user_obj.last_name, "Doe")
+        token = Token.objects.last()
+        self.assertEqual(resp.data["user_id"], user_obj.id)
+        self.assertTrue(resp.data["token"], token.key)
 
     def test_register_different_passwords(self):
         request = {
