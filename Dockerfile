@@ -13,7 +13,7 @@ WORKDIR /code/
 RUN apt-get update && apt-get install -y \
    build-essential \
    python3-dev \
-   mysql-devel \
+   libmariadb-dev \
    gcc
 
 RUN pip3 install --upgrade pip && pip3 install poetry
