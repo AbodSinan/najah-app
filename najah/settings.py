@@ -21,26 +21,6 @@ initialize_app()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-try:
-    AWS_REGION="ap-southeast-1"
-    boto3.setup_default_session(region_name=AWS_REGION)
-    ssm = boto3.client('ssm')
-
-    response = ssm.get_parameters(
-        Names=['S3_STORAGE_BUCKET_NAME', 'S3_SECRET_ACCESS_KEY', 'S3_ACCESS_KEY_ID', 'NAJAH_DB_URL', 'NAJAH_DB_PASSWORD', 'NAJAH_DB_USER'],
-        WithDecryption=True
-    )
-
-    AWS_PARAMS = {x['Name']: x['Value'] for x in response['Parameters']}
-    AWS_STORAGE_BUCKET_NAME = AWS_PARAMS.get("S3_STORAGE_BUCKET_NAME", None)
-
-    NAJAH_DB_USER = AWS_PARAMS.get("NAJAH_DB_USER", "postgres")
-    NAJAH_DB_URL = AWS_PARAMS.get("NAJAH_DB_URL", None)
-    NAJAH_DB_PASSWORD = AWS_PARAMS.get("NAJAH_DB_PASSWORD", None)
-
-except:
-    print("UNABLE TO CONNECT TO S3")
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -117,20 +97,45 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'najah.wsgi.application'
 
+try:
+    AWS_REGION="ap-southeast-1"
+    boto3.setup_default_session(region_name=AWS_REGION)
+    ssm = boto3.client('ssm')
+
+    response = ssm.get_parameters(
+        Names=['S3_STORAGE_BUCKET_NAME', 'S3_SECRET_ACCESS_KEY', 'S3_ACCESS_KEY_ID', 'NAJAH_DB_URL', 'NAJAH_DB_PASSWORD', 'NAJAH_DB_USER'],
+        WithDecryption=True
+    )
+
+    AWS_PARAMS = {x['Name']: x['Value'] for x in response['Parameters']}
+    AWS_STORAGE_BUCKET_NAME = AWS_PARAMS.get("S3_STORAGE_BUCKET_NAME", None)
+    NAJAH_DB_USER = AWS_PARAMS.get("NAJAH_DB_USER", "postgres")
+    NAJAH_DB_URL = AWS_PARAMS.get("NAJAH_DB_URL", None)
+    NAJAH_DB_PASSWORD = AWS_PARAMS.get("NAJAH_DB_PASSWORD", None)
+
+    DATABASES = {
+        'default': {
+            'ENGINE': "django.db.backends.mysql",
+            "NAME": "najah",
+            "USER": NAJAH_DB_USER,
+            "PASSWORD": NAJAH_DB_PASSWORD,
+            "HOST": NAJAH_DB_URL,
+            "PORT": os.getenv("DB_PORT_AUTH", 5432),
+        }
+    }
+
+except:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': "django.db.backends.mysql",
-        "NAME": "najah",
-        "USER": NAJAH_DB_USER,
-        "PASSWORD": NAJAH_DB_PASSWORD,
-        "HOST": NAJAH_DB_URL,
-        "PORT": os.getenv("DB_PORT_AUTH", 5432),
-    }
-}
+
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
