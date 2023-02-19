@@ -112,6 +112,7 @@ try:
     NAJAH_DB_USER = AWS_PARAMS.get("NAJAH_DB_USER", "postgres")
     NAJAH_DB_URL = AWS_PARAMS.get("NAJAH_DB_URL", None)
     NAJAH_DB_PASSWORD = AWS_PARAMS.get("NAJAH_DB_PASSWORD", None)
+    NAJAH_DB_PORT = AWS_PARAMS.get("NAJAH_DB_PORT", 3306)
 
     DATABASES = {
         'default': {
@@ -120,7 +121,7 @@ try:
             "USER": NAJAH_DB_USER,
             "PASSWORD": NAJAH_DB_PASSWORD,
             "HOST": NAJAH_DB_URL,
-            "PORT": os.getenv("DB_PORT_AUTH", 5432),
+            "PORT": NAJAH_DB_PORT,
         }
     }
 
